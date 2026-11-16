@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Firmware-Emulator · Versteckspiel Gruppe 22</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <span class="logo" aria-hidden="true"></span>
+    <div>
+      <h1>Firmware-Emulator</h1>
+      <p>Versteckspiel mit Gerät · Gruppe 22 · <span id="fwver">fw</span></p>
+    </div>
+  </div>
+  <div class="tools">
+    <button id="btnAllOn" class="btn primary" title="Alle vier Geräte einschalten (wie Knopf 2 s halten)">Alle einschalten</button>
+    <button id="btnAllOff" class="btn" title="Alle Geräte ausschalten">Alles aus</button>
+    <button id="btnDemo" class="btn" title="Automatischer Durchlauf: einschalten → Handy → Runde → ausschalten">Auto-Demo</button>
+    <label class="btn speedfield" title="Zeitraffer für die Rundenuhr (Knopfdrücke bleiben in Echtzeit)">
+      <span>Zeitraffer</span>
+      <select id="speed">
+        <option value="1" selected>1×</option>
+        <option value="5">5×</option>
+        <option value="20">20×</option>
+      </select>
+    </label>
+    <button id="btnSound" class="btn ghost" title="Tonpaket: was Dorian liefern muss">Ton: stumm</button>
+    <button id="btnLog" class="btn ghost" title="Firmware-Log">Log</button>
+  </div>
+</header>
+
+<main class="layout">
+
+  <!-- ---------------------------------------------------------- Spielfeld -->
+  <section class="panel fieldpanel">
+    <div class="panelhead">
+      <h2>Spielfeld <span class="dim">24 × 14 m</span></h2>
+      <span class="dim small">Geräte ziehen = Spieler bewegen · 1 Kästchen = 1 m</span>
+    </div>
+    <div class="field" id="field">
+      <div class="fieldgrid" aria-hidden="true"></div>
+      <div class="fieldmeta" id="fieldmeta"></div>
+    </div>
+    <div class="legend">
+      <span><i class="sw" style="background:#f2b53a"></i>Gerät A–D</span>
+      <span><i class="sw ring"></i>Fang-Fortschritt</span>
+      <span class="dim">Reichweite ESP-NOW im Modell: 12 m · Stille ab 10 m</span>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------ Geräte -->
+  <section class="panel devpanel">
+    <div class="panelhead">
+      <h2>Vier Geräte</h2>
+      <span class="dim small">Knopf: kurz = drücken · 2 s halten = ein/aus</span>
+    </div>
+    <div class="devices" id="devices"></div>
+  </section>
+
+  <!-- ------------------------------------------------------------- Handy -->
+  <section class="panel phonepanel">
+    <div class="panelhead">
+      <h2>Handy</h2>
+      <span class="dim small">WLAN des Geräts · A-07, A-08</span>
+    </div>
+    <div class="phone" id="phone">
+      <div class="phone-notch"></div>
+      <div class="phone-screen" id="phoneScreen"></div>
+      <div class="phone-bar"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="statusbar">
+  <span id="statPhase">Bereit</span>
+  <span class="sep">·</span>
+  <span id="statDev">0 Geräte an</span>
+  <span class="sep">·</span>
+  <span id="statBeeps">0 Piepser</span>
+  <span class="sep">·</span>
+  <span class="dim" id="statNote">Ton: noch stumm — die 38 Sounds fehlen (Dorian)</span>
+</footer>
+
+<!-- ------------------------------------------------------------- Schubladen -->
+<aside class="drawer" id="logDrawer" hidden>
+  <header>
+    <h3>Firmware-Log</h3>
+    <div class="draweractions">
+      <button class="btn tiny" data-act="clearLog">Leeren</button>
+      <button class="btn tiny" data-act="closeDrawers">Schliessen</button>
+    </div>
+  </header>
+  <pre id="loglines"></pre>
+</aside>
+
+<aside class="drawer" id="soundDrawer" hidden>
+  <header>
+    <h3>Tonpaket — was die Firmware abspielt</h3>
+    <div class="draweractions">
+      <button class="btn tiny" data-act="closeDrawers">Schliessen</button>
+    </div>
+  </header>
+  <p class="dim small" style="margin:0 0 10px">
+    38 Sounds aus <code>TONPAKET_DORIAN.md</code>. Kein Sound geliefert → der Emulator bleibt stumm
+    und zählt nur, wie oft jede Datei gebraucht würde. Kommt eine Datei nach
+    <code>sounds/&lt;name&gt;.wav</code>, spielt sie ohne Codeänderung.
+  </p>
+  <div id="soundlist" class="soundlist"></div>
+</aside>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/config.js"></script>
+<script src="js/sound.js"></script>
+<script src="js/device.js"></script>
+<script src="js/game.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
