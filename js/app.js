@@ -56,7 +56,10 @@ const UI = {
     this.bindChrome();
     Log.sys(`Emulator gestartet, fw ${FW.version}, ${this.devices.length} Geräte aus`, 'l-dim');
     Log.sys(`Ton: stumm - ${Sound.total} Sounds aus TONPAKET_DORIAN.md noch nicht geliefert`, 'l-warn');
-    requestAnimationFrame(() => this.loop());
+    // fester Takt statt requestAnimationFrame: rAF pausiert im Hintergrund-Tab,
+    // dann würde die Firmware einfrieren (Boot bliebe hängen).
+    this._last = performance.now();
+    setInterval(() => this.loop(), 80);
   },
 
   // ------------------------------------------------------------- bind chrome
@@ -352,12 +355,14 @@ const UI = {
   // ------------------------------------------------------------------- loop
   loop() {
     const now = performance.now();
-    const dt = Math.min(0.25, (now - (this._last || now)) / 1000) || 0.1;
+    // im Hintergrund-Tab drosselt der Browser den Takt auf ~1/s: dann grösserer
+    // Zeitschritt, damit Runden nicht in Zeitlupe laufen
+    const cap = document.hidden ? 1.5 : 0.25;
+    const dt = Math.min(cap, (now - (this._last || now)) / 1000) || 0.1;
     this._last = now;
     this.devices.forEach(d => d.tick(dt));
     Game.tick(dt);
     this.renderAll();
-    requestAnimationFrame(() => this.loop());
   },
 };
 
@@ -365,7 +370,7 @@ const UI = {
 const Phone = {
   state: 'lock',         // lock | wifi | connecting | web
   devId: null,
-  tab: 'steuerung',
+  tab: 'raum',
   banner: '',
   savedMsg: '',
   timer: null,
@@ -418,22 +423,21 @@ const Phone = {
       const d = Game.byId(this.devId);
       if (!d || !d.on) { this.state = 'wifi'; this.render(); return; }
       const tabBtn = (id, label) => `<button data-act="tab" data-tab="${id}" class="${this.tab === id ? 'on' : ''}">${label}</button>`;
+      const room = Game.roomFrom(d);
+      const inRoom = room.filter(r => r.state === 'range').length;
       let inner = '';
-      if (this.tab === 'steuerung') {
-        inner = `
-          <div class="devcard" style="--c:${d.color}">
-            <h4><span class="did">${d.id}</span> ${FW.deviceName} ${d.id}</h4>
-            <dl class="kv">
-              <dt>Firmware</dt><dd>${FW.version}</dd>
-              <dt>Akku</dt><dd id="liveBat">--</dd>
-              <dt>Status</dt><dd id="liveState">--</dd>
-              <dt>Modus</dt><dd id="liveMode">--</dd>
-              <dt>Runde</dt><dd id="liveRound">--</dd>
-              <dt>Schonzeit</dt><dd id="liveGrace">--</dd>
-              <dt>Funk</dt><dd id="livePeers">--</dd>
-            </dl>
-          </div>
-          <form class="form" id="settings">
+      if (this.tab === 'raum') {
+        inner = `<div class="roomcard">
+            <div class="roomhead">
+              <b>Raum</b>
+              <span class="dim small">${inRoom} von ${room.length} Geräten in Reichweite</span>
+            </div>
+            <div id="roombox">${this.roomHTML(d)}</div>
+            <p class="note" style="margin-top:8px">Alle Geräte hängen im selben Funknetz (ESP-NOW).
+              Einstellungen, die hier gespeichert werden, gelten für alle Geräte im Raum.</p>
+          </div>`;
+      } else if (this.tab === 'einstellungen') {
+        inner = `<form class="form" id="settings">
             <label>Modus
               <select name="mode">
                 ${FW.modes.map(m => `<option value="${m.id}" ${m.id === d.mode.id ? 'selected' : ''}>${m.name}</option>`).join('')}
@@ -450,10 +454,11 @@ const Phone = {
                 ${Game.devices.map(x => `<option value="${x.id}" ${x.id === d.settings.seeker ? 'selected' : ''}>Gerät ${x.id}</option>`).join('')}
               </select>
             </label>
-            <button class="btn primary" type="submit">Speichern</button>
+            <button class="btn primary" type="submit">Für alle Geräte speichern</button>
             <div class="savedmsg ${Phone.savedMsgErr ? 'err' : ''}" id="savedmsg">${Phone.savedMsg}</div>
-            <p class="note">Gespeichert wird im Gerät (nvs) und gilt nach dem Neustart -
-              A-08. Während einer laufenden Runde wirkt eine Änderung ab der nächsten.</p>
+            <p class="note">Gerät ${d.id} schickt die Einstellung per ESP-NOW an alle Geräte im Raum
+              (${inRoom} von ${room.length}). Kein Knopfdrücken an den anderen Geräten nötig -
+              A-08. Gespeichert wird im jeweiligen Gerät (nvs), eine laufende Runde bleibt unberührt.</p>
           </form>`;
       } else {
         inner = `<div class="rules">
@@ -492,16 +497,51 @@ const Phone = {
         <div class="webhead">
           <button class="back" data-act="disconnect" title="trennen">←</button>
           <span class="url">http://${FW.wifi.ip}/</span>
-          <span class="dim small">${d.batteryPct ? Math.round(d.batteryPct) + '%' : ''}</span>
+          <span class="dim small">AP ${FW.wifi.ssidPrefix}${d.id}</span>
         </div>
         <div class="pbody">
-          <div class="tabs">${tabBtn('steuerung', 'Steuerung')}${tabBtn('regeln', 'Regeln')}</div>
+          <div class="tabs">${tabBtn('raum', 'Raum')}${tabBtn('einstellungen', 'Einstellungen')}${tabBtn('regeln', 'Regeln')}</div>
           ${inner}
         </div>`;
     }
+
     sc.innerHTML = this.bar() + body;
     this.bind(sc);
     this.refreshLive();
+  },
+
+  // Alle Geräte des Raums: kleines Feld + Liste (was das Gerät per ESP-NOW sieht)
+  roomHTML(origin) {
+    const room = Game.roomFrom(origin);
+    const map = room.map(r => {
+      const d = r.dev;
+      const cls = r.state === 'range' ? '' : r.state === 'out' ? 'out' : 'gone';
+      // in den Rahmen einpassen, damit der Punkt am Rand nicht abgeschnitten wird
+      const lx = 6 + (d.pos.x / FW.field.w) * 88;
+      const ly = 8 + (d.pos.y / FW.field.h) * 84;
+      return `<i class="rdot ${cls}" style="--c:${d.color};left:${lx.toFixed(2)}%;top:${ly.toFixed(2)}%">${d.id}</i>`;
+    }).join('');
+    const rows = room.map(r => {
+      const dev = r.dev;
+      let where, mode, state, bat;
+      if (r.state === 'range') {
+        where = dev.id === origin.id ? 'verbunden' : (r.dist !== null ? `${r.dist.toFixed(1)} m` : 'im Raum');
+        mode = dev.mode.name;
+        state = dev.aura().text;
+        bat = `${Math.round(dev.batteryPct)} %`;
+      } else if (r.state === 'out') {
+        where = 'ausser Reichweite'; mode = '—'; state = 'Funk weg'; bat = '—';
+      } else {
+        where = 'aus'; mode = '—'; state = 'aus'; bat = '—';
+      }
+      return `<div class="rrow ${r.state}">
+        <span class="did" style="--c:${dev.color}">${dev.id}</span>
+        <span class="rmain"><b>${mode}</b><span>${state}</span></span>
+        <span class="rbat">${bat}</span>
+        <span class="rdist">${where}</span>
+      </div>`;
+    }).join('');
+    return `<div class="roommap">${map}</div><div class="roomlist">${rows}</div>`;
   },
 
   bind(root) {
@@ -530,7 +570,7 @@ const Phone = {
       Sound.play(dev, 'phone_connected');
       dev.log(`wifi: Handy verbunden (192.168.4.2), Seite http://${FW.wifi.ip} geöffnet`, 'ok');
       this.state = 'web';
-      this.tab = 'steuerung';
+      this.tab = 'raum';
       this.savedMsg = '';
       this.savedMsgErr = false;
       this.render();
@@ -563,34 +603,36 @@ const Phone = {
       Sound.play(d, 'error');
       return;
     }
-    const modeIdx = FW.modes.findIndex(m => m.id === modeId);
-    d.modeIndex = modeIdx >= 0 ? modeIdx : d.modeIndex;
-    d.saveSettings({
+    const patch = {
       mode: modeId,
       roundSec: Math.round(minutes * 60),
       graceSec: grace,
       seeker: form.seeker.value,
-    });
-    Sound.play(d, 'menu_ok');
+    };
+    // Ein Gerät nimmt die Einstellung an und verteilt sie per ESP-NOW an alle im Raum
+    const res = Game.applySettingsToRoom(d, patch);
     Sound.play(d, 'saved');
-    d.log(`web: Modus ${d.mode.name}, Runde ${fmtTime(d.roundSec)}, Schonzeit ${grace} s, Sucher ${d.settings.seeker} -> nvs`, 'ok');
-    this.savedMsg = `Gespeichert: ${d.mode.name}, ${fmtTime(d.roundSec)}, ${grace} s Schonzeit.`;
-    this.savedMsgErr = false;
+    const modeName = (FW.modes.find(m => m.id === modeId) || d.mode).name;
+    const parts = [`${modeName}, ${fmtTime(patch.roundSec)}, ${grace} s Schonzeit`];
+    parts.push(res.ok.length ? `an ${res.ok.length} Geräte verteilt (${res.ok.join(', ')})` : 'an kein Gerät verteilt');
+    if (res.out.length) parts.push(`ausser Reichweite: ${res.out.join(', ')}`);
+    if (res.off.length) parts.push(`aus: ${res.off.join(', ')}`);
+    this.savedMsg = parts.join(' · ');
+    this.savedMsgErr = res.ok.length === 0;
     this.render();
-    UI.toast(`Gerät ${d.id}: Einstellung gespeichert`);
+    UI.toast(res.out.length
+      ? `Gespeichert auf ${res.ok.length} Geräten - ${res.out.join(', ')} ausser Reichweite`
+      : `Gespeichert auf allen ${res.ok.length} Geräten`);
   },
 
   refreshLive() {
     if (this.state !== 'web') return;
     const d = Game.byId(this.devId);
     if (!d) return;
-    const set = (id, v) => { const el = document.getElementById(id); if (el && el.textContent !== v) el.textContent = v; };
-    set('liveBat', `${Math.round(d.batteryPct)} % · ${d.voltage.toFixed(2)} V`);
-    set('liveState', d.aura().text);
-    set('liveMode', d.mode.name);
-    set('liveRound', fmtTime(d.roundSec));
-    set('liveGrace', `${d.graceSec} s`);
-    set('livePeers', `${d.peers.size} in Reichweite`);
+    if (this.tab === 'raum') {
+      const box = document.getElementById('roombox');
+      if (box) box.innerHTML = this.roomHTML(d);      // kein Eingabefeld darin, Neuaufbau ist safe
+    }
   },
 };
 

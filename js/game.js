@@ -71,6 +71,49 @@ const Game = {
     return best;
   },
 
+  // ---------------------------------------------------------- Raum / Funk
+  // Alle Geräte, die das Gerät origin über ESP-NOW sieht - plus es selbst.
+  // So zeigt die Handyseite den ganzen Raum, nicht nur das eine Gerät.
+  roomFrom(origin) {
+    return this.devices.map(d => {
+      let state = 'range';
+      if (!d.on) state = 'off';
+      else if (d !== origin && !origin.peers.has(d.id) && !d.peers.has(origin.id)) state = 'out';
+      const dist = d === origin ? 0 : (origin.peers.get(d.id) ?? d.peers.get(origin.id) ?? null);
+      return { dev: d, state, dist };
+    });
+  },
+
+  // Das Handy schreibt in EIN Gerät, das verteilt die Einstellung per
+  // ESP-NOW an alle Geräte im Raum (A-08 ohne Knopfdrücken an jedem Gerät).
+  applySettingsToRoom(origin, patch) {
+    const res = { ok: [], off: [], out: [] };
+    this.devices.forEach(d => {
+      if (!d.on) { res.off.push(d.id); return; }
+      if (d !== origin && !origin.peers.has(d.id) && !d.peers.has(origin.id)) {
+        res.out.push(d.id);
+        d.log(`espnow: Einstellung von ${origin.id} nicht erhalten - ausser Reichweite`, 'warn');
+        return;
+      }
+      const mi = FW.modes.findIndex(m => m.id === patch.mode);
+      if (mi >= 0) d.modeIndex = mi;
+      d.saveSettings({
+        mode: patch.mode,
+        roundSec: patch.roundSec,
+        graceSec: patch.graceSec,
+        seeker: patch.seeker,
+      });
+      if (d !== origin) Sound.play(d, 'menu_ok');
+      const hinweis = this.inRound() && d.role ? ' - wirkt ab der nächsten Runde' : '';
+      d.log(`espnow: Einstellung von ${origin.id} - ${d.mode.name}, ${fmtTime(d.roundSec)}, ${d.graceSec} s Schonzeit${hinweis}`, 'ok');
+      res.ok.push(d.id);
+    });
+    this.log(`Handy -> ${origin.id}: an ${res.ok.length} Geräte verteilt (${res.ok.join(', ') || 'keine'})` +
+      (res.out.length ? `, ausser Reichweite: ${res.out.join(', ')}` : '') +
+      (res.off.length ? `, aus: ${res.off.join(', ')}` : ''), 'ok');
+    return res;
+  },
+
   // --------------------------------------------------------------- starting
   checkStart() {
     if (this.phase !== 'idle') return;

@@ -35,12 +35,29 @@ py -3 -m http.server 8791 --directory 03_Firmware/emulator
 | Alle Spieler starten | jedes Gerät drückt innerhalb von **10 s** (Regeln 2.3) |
 | Spieler bewegen | farbige Marke auf dem Spielfeld ziehen; 1 Kästchen = 1 m |
 | Handy | „WLAN einschalten“ → Gerät antippen → Seite `http://192.168.4.1` |
+| Einstellungen | Handy-Reiter **Einstellungen**: Modus, Dauer, Wartezeit, Sucher — „Für alle Geräte speichern“ verteilt sie per ESP-NOW an alle Geräte im Raum |
 | Gerät ausschalten | Knopf **2 s halten** |
 | Zeitraffer | Rundenuhr 1× / 5× / 20× — Knopfdrücke bleiben Echtzeit, der Piepton-Rhythmus auch |
 
 Die vier Geräte starten **aus**. Das ist Absicht: der Ablauf „einschalten, Modus wählen,
 losspielen“ (A-15, unter fünf Minuten) soll im Emulator wirklich durchlaufen werden.
 Wer nur schnell spielen will: **Alle einschalten**.
+
+## Handyseite: ein Raum, alle Geräte
+
+Die Seite `http://192.168.4.1` gehört dem Gerät, dessen WLAN das Handy gerade nutzt
+(z. B. A), zeigt aber den **ganzen Raum**:
+
+- Reiter **Raum**: kleines Feld mit allen Geräten an ihrer Position (grau = aus,
+  gestrichelt = ausser Reichweite), darunter je Gerät Modus, Status, Akku und Abstand.
+- Reiter **Einstellungen**: ein Formular. „Für alle Geräte speichern“ schickt die
+  Einstellung per ESP-NOW vom verbundenen Gerät an alle anderen — **kein Knopfdrücken
+  an jedem Gerät**. Geräte ausser Reichweite werden im Ergebnis genannt und behalten
+  ihre alte Einstellung.
+- Reiter **Regeln**: die Kurzfassung der Spielregeln (A-07).
+
+Am Gerät selbst braucht man den Knopf dann nur noch zum Ein-/Ausschalten und für den
+gemeinsamen Start (Doppeldruck) — der Modus kommt vom Handy.
 
 ## Was der Emulator abbildet
 
@@ -53,7 +70,7 @@ Wer nur schnell spielen will: **Alle einschalten**.
 | A-05 Display: Modus, Restzeit, Status | 1,5 × 2,5 cm Display je Gerät, Zonen-Balken, Fang-Ring |
 | A-06 ein Knopf | alles über kurz / 2 s halten |
 | A-07 Regeln auf der Geräte-Webseite | Reiter „Regeln“ auf der Handyseite |
-| A-08 Modus/Dauer/Wartezeit über Handy | Formular schreibt in „nvs“ (localStorage), überlebt Neustart |
+| A-08 Modus/Dauer/Wartezeit über Handy | Formular schreibt in „nvs“ (localStorage) aller Geräte im Raum, überlebt Neustart |
 | A-09 Töne blockieren nicht | alle Töne sind Ereignisse, die Runde läuft weiter |
 | A-10 zwei Stunden Akku | Akku sinkt 0,80 %/min (≈ 2 h), Warnung bei 20 % |
 | A-11 Schutz vor Tiefentladung | Abschaltung bei 0,4 % = 3,00 V, `snd_battery_empty` |
