@@ -9,6 +9,11 @@ Handy-Einstellungen → gemeinsamer Start → Runde in einem der vier Modi → A
 zählt die Aufrufe und zeigt sie im Tonpaket-Fenster — man sieht also, *wo* welcher Ton
 gebraucht wird. Kommt eine Datei, spielt sie ohne Codeänderung (siehe unten).
 
+## Im Netz
+
+**https://lagzy.github.io/versteckspiel-emulator/** (Repo `lagzy/versteckspiel-emulator`,
+GitHub Pages aus `main`). Jeder Push auf `main` baut die Seite in etwa einer Minute neu.
+
 ## Starten
 
 Doppelklick auf `index.html` — es gibt keinen Build, kein npm, keine Fremdbibliothek und
