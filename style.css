@@ -83,10 +83,10 @@ code { font-family: var(--mono); font-size: .92em; color: #a9ded0; }
 /* ------------------------------------------------------------------ layout */
 .layout {
   display: grid; gap: 14px; padding: 14px; align-items: start;
-  grid-template-columns: minmax(320px, 1fr) minmax(420px, 452px) 372px;
+  grid-template-columns: minmax(300px, 1fr) minmax(520px, 604px) 372px;
 }
-@media (max-width: 1420px) {
-  .layout { grid-template-columns: minmax(300px, 1fr) minmax(400px, 440px); }
+@media (max-width: 1520px) {
+  .layout { grid-template-columns: minmax(300px, 1fr) minmax(480px, 560px); }
   .phonepanel { grid-column: 1 / -1; }
   .phone { margin: 0 auto; }
 }
@@ -167,15 +167,14 @@ code { font-family: var(--mono); font-size: .92em; color: #a9ded0; }
 
 /* ----------------------------------------------------------------- devices */
 .devices { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-@media (max-width: 520px) { .devices { grid-template-columns: 1fr; } }
+@media (max-width: 560px) { .devices { grid-template-columns: 1fr; } }
 
 .dev {
   background: var(--panel2); border: 1px solid var(--hair); border-radius: 12px;
-  padding: 9px 10px 10px; position: relative; overflow: hidden;
-  border-top: 2px solid var(--c);
+  padding: 9px 10px 7px; position: relative; min-width: 0;
 }
-.dev.off { opacity: .78; }
-.devhead { display: flex; align-items: center; gap: 7px; margin-bottom: 8px; }
+.dev.off { opacity: .94; }
+.devhead { display: flex; align-items: center; gap: 7px; margin-bottom: 7px; }
 .devhead .did {
   font: 700 11.5px var(--mono); color: #0c1011; background: var(--c);
   width: 19px; height: 19px; border-radius: 5px; display: grid; place-items: center;
@@ -194,59 +193,121 @@ code { font-family: var(--mono); font-size: .92em; color: #a9ded0; }
 .chip.ended { color: #0d1214; background: var(--amber); border-color: var(--amber); }
 .chip.off { color: var(--dimmer); }
 
-.devbody { display: flex; gap: 10px; }
+/* --- Gehäuse wie im CAD: orange Schale, dunkle Platte, blaues LCD, PULSE --- */
+.case { container-type: size; width: 100%; aspect-ratio: 100 / 70; position: relative; }
+.casebody {
+  position: absolute; inset: 0; overflow: hidden;
+  border-radius: 9cqw / 14cqh;
+  background: radial-gradient(130% 155% at 22% -12%, #f7ac74 0%, #eb8c4e 34%, #de7836 68%, #c9612a 100%);
+  box-shadow:
+    inset 0 1.3cqh 0 rgba(255,255,255,.30),
+    inset 0 -2.6cqh 3cqh rgba(112,45,8,.55),
+    inset 0 0 0 .7cqw rgba(255,255,255,.10),
+    0 .9cqh 0 #a94f1c, 0 1.4cqh 2.6cqh -1cqh rgba(0,0,0,.7);
+}
+.casebody::after {
+  content: ''; position: absolute; inset: 2.6%; border-radius: 7cqw / 11cqh;
+  box-shadow: inset 0 0 0 1px rgba(255,240,225,.28); pointer-events: none;
+}
+.dev.off .casebody { filter: saturate(.55) brightness(.72); }
 
-/* 1,5 × 2,5 cm Display, hier 112 × 187 px dargestellt */
-.screen {
-  flex: 0 0 auto; width: 112px; height: 187px; border-radius: 5px;
-  background: var(--scr-bg); border: 1px solid #1d3934;
-  box-shadow: inset 0 0 22px -8px #0d8f6d33, 0 0 0 3px #0c1110;
-  padding: 5px 6px; display: flex; flex-direction: column; gap: 2px;
-  font-family: var(--mono); color: var(--scr-fg); overflow: hidden; position: relative;
+.plate {
+  position: absolute; left: 5.5%; right: 5.5%; top: 9.5%; height: 43%;
+  border-radius: 4cqw / 12cqh;
+  background: linear-gradient(180deg, #4c4f53 0%, #3a3d41 45%, #2d3033 100%);
+  box-shadow:
+    inset 0 .7cqh 0 rgba(255,255,255,.13),
+    inset 0 -1.2cqh 1.8cqh rgba(0,0,0,.42),
+    0 .7cqh 1.6cqh -0.3cqh rgba(0,0,0,.5);
+  display: flex; align-items: center; gap: 3%; padding: 4% 5%;
+  z-index: 2;
 }
-.screen.dark { opacity: .22; }
-.screen .st { display: flex; justify-content: space-between; font-size: 8px; letter-spacing: .05em; color: #4f9d84; }
-.screen .sbig {
-  font-size: 15px; font-weight: 700; letter-spacing: .01em; line-height: 1.05;
-  margin-top: 4px; word-break: break-word;
+.platescreen {
+  flex: 0 0 62%; height: 100%; border-radius: 2.4cqw; background: #202325;
+  box-shadow: inset 0 0 0 .8cqw #26292c, inset 0 .5cqh .6cqh rgba(0,0,0,.9), 0 1px 0 rgba(255,255,255,.06);
+  display: flex; padding: 2.5% 3.5%;
 }
-.screen .ssub { font-size: 8.5px; color: #57a68e; line-height: 1.25; min-height: 11px; }
-.screen .stime {
-  font-size: 21px; font-weight: 700; letter-spacing: -.02em; margin-top: auto;
-  font-variant-numeric: tabular-nums;
+.brand {
+  flex: 1 1 auto; text-align: center; font: 800 5.4cqw/1 var(--font); letter-spacing: .17em;
+  color: #3a3e42; text-shadow: 0 1px 0 rgba(255,255,255,.30), 0 -1px 0 rgba(0,0,0,.6);
+  padding-right: .3em;
 }
-.screen .sbars { display: flex; gap: 2px; align-items: flex-end; height: 15px; }
-.screen .sbars i { flex: 1; background: #123c33; border-radius: 1px; }
-.screen .sbars i.on { background: var(--scr-fg); }
-.screen .sbars i:nth-child(1) { height: 20%; }
-.screen .sbars i:nth-child(2) { height: 36%; }
-.screen .sbars i:nth-child(3) { height: 52%; }
-.screen .sbars i:nth-child(4) { height: 74%; }
-.screen .sbars i:nth-child(5) { height: 100%; }
-.screen .shint {
-  font-size: 7.5px; color: #3e7d69; line-height: 1.2;
-  display: flex; flex-direction: column; gap: 1px; overflow: hidden;
+.grille {
+  position: absolute; left: 10%; top: 47%; width: 18%; height: 26%;
+  background: linear-gradient(180deg, #565b60 0%, #43474b 45%, #35383c 100%);
+  border-radius: 0 0 50% 50% / 0 0 46% 46%;
+  box-shadow: 0 1.2cqh 2.2cqh -0.6cqh rgba(0,0,0,.6), inset 0 -.5cqh 1cqh rgba(0,0,0,.35), inset 0 .4cqh 0 rgba(255,255,255,.14);
+  display: grid; place-items: center; z-index: 1;
 }
-.screen .shint span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.screen .scap { height: 3px; background: #123c33; border-radius: 2px; overflow: hidden; }
-.screen .scap i { display: block; height: 100%; background: var(--amber); width: 0; }
-.screen .sndot {
-  position: absolute; right: 4px; bottom: 3px; width: 5px; height: 5px; border-radius: 50%;
-  background: var(--scr-fg); opacity: .12;
+.grille i {
+  width: 70%; aspect-ratio: 1; border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, #31353a 0 42%, transparent 43%),
+    repeating-conic-gradient(from 0deg, #7c8288 0deg 2.4deg, #2b2e32 2.4deg 4.8deg);
+  box-shadow: inset 0 0 0 1px #1b1e20, 0 1px 2px rgba(0,0,0,.55);
 }
-.screen.snd .sndot { opacity: 1; box-shadow: 0 0 8px 1px #62dfb4; }
-.screen .batmini { display: inline-flex; gap: 1px; align-items: center; }
-.screen .batmini i { width: 2.5px; height: 5px; background: #1b4b3e; }
-.screen .batmini i.on { background: #6ecfa9; }
+.ecg { position: absolute; left: 7%; width: 86%; top: 77%; height: 13%; }
+.ecg path { fill: none; stroke: rgba(112,44,10,.72); stroke-width: 1.7; stroke-linejoin: round; stroke-linecap: round; }
+.ecg { z-index: 1; }
+.corner {
+  position: absolute; width: 6.4cqw; aspect-ratio: 1; opacity: .55; border-radius: 40% 60% 50% 40%;
+  background: repeating-linear-gradient(45deg, rgba(120,48,10,.55) 0 1px, transparent 1px 2.6px);
+}
+.corner.c1 { left: 1.6%; top: 3%;    transform: rotate(-8deg); }
+.corner.c2 { right: 1.6%; top: 3%;   transform: rotate(8deg); }
+.corner.c3 { left: 1.6%; bottom: 4%; transform: rotate(8deg); }
+.corner.c4 { right: 1.6%; bottom: 4%;transform: rotate(-8deg); }
 
-.side { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1 1 auto; min-width: 0; }
+/* --- LCD-Inhalt (quer, wie im CAD) --- */
+.lcd {
+  position: relative; flex: 1 1 auto; border-radius: 1.2cqw; overflow: hidden;
+  background: linear-gradient(180deg, #a9ebfb 0%, #82d5ee 48%, #62c3e1 100%);
+  color: #06384a; font-family: var(--mono);
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding: 5% 6%;
+  box-shadow: inset 0 0 3cqw rgba(255,255,255,.5), inset 0 -1.4cqh 1.6cqh rgba(10,80,110,.22);
+}
+.lcd::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(118deg, rgba(255,255,255,.45) 0%, rgba(255,255,255,0) 44%);
+}
+.lcd.dark { filter: grayscale(.55) brightness(.5); }
+.lcd.snd { filter: brightness(1.12) saturate(1.05); }
+.lcd .lrow { display: flex; align-items: center; justify-content: space-between; gap: 4%; min-width: 0; }
+.lcd .lmode { font-size: 2.5cqw; letter-spacing: .07em; opacity: .85; white-space: nowrap; }
+.lcd .lsub {
+  flex: 1 1 auto; font-size: 2.3cqw; opacity: .62; text-align: right;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
+}
+.lcd .lbat { display: inline-flex; gap: .7cqw; align-items: flex-end; }
+.lcd .lbat i { width: 1.2cqw; height: 2cqw; background: rgba(6,56,74,.22); border-radius: .3cqw; }
+.lcd .lbat i.on { background: rgba(6,56,74,.8); }
+.lcd .lbig {
+  flex: 1 1 auto; min-width: 0;
+  font-size: 5.7cqw; font-weight: 700; line-height: 1; white-space: nowrap;
+  overflow: hidden;
+}
+.lcd .lbig.mini { font-size: 4.5cqw; letter-spacing: -.01em; }
+.lcd .ltime { font-size: 5.7cqw; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.lcd .lbars { display: flex; gap: .9cqw; align-items: flex-end; height: 3.4cqh; flex: 0 0 auto; }
+.lcd .lbars i { width: 2.4cqw; background: rgba(6,56,74,.18); border-radius: .4cqw; }
+.lcd .lbars i:nth-child(1) { height: 22%; }
+.lcd .lbars i:nth-child(2) { height: 40%; }
+.lcd .lbars i:nth-child(3) { height: 58%; }
+.lcd .lbars i:nth-child(4) { height: 78%; }
+.lcd .lbars i:nth-child(5) { height: 100%; }
+.lcd .lbars i.on { background: rgba(6,56,74,.82); }
+.lcd .lcap { flex: 1 1 auto; height: 1.3cqh; border-radius: 1cqh; background: rgba(6,56,74,.16); overflow: hidden; }
+.lcd .lcap i { display: block; height: 100%; background: rgba(6,56,74,.8); }
 
+/* --- Fusszeile der Karte: Knopf, Akku, WLAN --- */
+.devfoot { display: flex; align-items: center; gap: 9px; margin-top: 8px; }
 .knopf {
-  width: 54px; height: 54px; border-radius: 50%; border: 0; padding: 0; position: relative;
-  background: radial-gradient(circle at 35% 30%, #39464b, #1a2125 68%);
-  box-shadow: inset 0 1px 0 #55646a, 0 3px 8px -3px #000;
-  color: #cfdade; font: 700 11px var(--mono); cursor: pointer; flex: 0 0 auto;
-  touch-action: none;
+  width: 34px; height: 34px; border-radius: 50%; border: 0; padding: 0; position: relative;
+  background: radial-gradient(circle at 34% 26%, #4b585e, #1b2226 68%);
+  box-shadow: inset 0 1px 0 #5c6b72, 0 3px 6px -3px #000;
+  color: #b9c7cb; font: 700 7px var(--mono); letter-spacing: .03em;
+  cursor: pointer; flex: 0 0 auto; touch-action: none;
 }
 .knopf::after {
   content: ''; position: absolute; inset: -5px; border-radius: 50%;
@@ -257,21 +318,25 @@ code { font-family: var(--mono); font-size: .92em; color: #a9ded0; }
 }
 .knopf.holding::after { opacity: 1; }
 .knopf:active { transform: translateY(1px); }
-.knopf:disabled { cursor: not-allowed; filter: grayscale(1) brightness(.6); }
 
-.mini { width: 100%; font: 10.5px var(--mono); color: var(--dim); display: flex; justify-content: space-between; gap: 6px; }
+.fk { display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1 1 auto; }
+.fk.right { flex: 0 0 auto; align-items: flex-end; }
+.mini { width: 100%; font: 10px var(--mono); color: var(--dim); display: flex; justify-content: space-between; gap: 6px; }
 .mini b { color: #b9c7cb; font-weight: 600; }
 .bat { display: flex; gap: 2px; align-items: center; }
-.bat i { width: 4px; height: 9px; background: #243034; border-radius: 1px; }
+.bat i { width: 4px; height: 8px; background: #243034; border-radius: 1px; }
 .bat i.on { background: var(--accent); }
 .bat i.on.low { background: var(--amber); }
 .bat i.on.crit { background: var(--red); }
-
-.ledrow { display: flex; gap: 5px; align-items: center; margin-top: auto; }
+.ledrow { display: flex; gap: 5px; align-items: center; }
 .led { width: 6px; height: 6px; border-radius: 50%; background: #223033; }
 .led.on { background: #6fe3b8; box-shadow: 0 0 7px 1px #46c99c; }
 .led.ap { background: #2b3a44; }
 .led.ap.on { background: #7d9bf5; box-shadow: 0 0 7px 1px #5f7fe0; }
+.devhint {
+  margin-top: 5px; font: 9.5px var(--mono); color: var(--dimmer);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-height: 12px;
+}
 
 /* ------------------------------------------------------------------- phone */
 .phone {

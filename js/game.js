@@ -304,7 +304,7 @@ const Game = {
     ready.forEach(d => {
       let big = 'SCHONZEIT', sub = '';
       if (mode === 'klassisch' || mode === 'zeitdruck') {
-        sub = d.role === 'seeker' ? 'Verstecker laufen los' : 'verstecken!';
+        sub = d.role === 'seeker' ? 'warten' : 'verstecken';
         if (d.role === 'seeker') big = 'WARTEN';
       }
       if (mode === 'zombie') {

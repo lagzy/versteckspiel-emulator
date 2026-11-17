@@ -203,16 +203,32 @@ const UI = {
           <span class="dname">Gerät ${d.id}</span>
           <span class="chip" data-chip>aus</span>
         </div>
-        <div class="devbody">
-          <div class="screen dark" data-screen></div>
-          <div class="side">
-            <button class="knopf" data-btn title="kurz drücken / 2 s halten">K</button>
+        <div class="case">
+          <div class="casebody">
+            <div class="plate">
+              <div class="platescreen"><div class="lcd" data-screen></div></div>
+              <div class="brand">PULSE</div>
+            </div>
+            <div class="grille" aria-hidden="true"><i></i></div>
+            <svg class="ecg" viewBox="0 0 100 14" preserveAspectRatio="none" aria-hidden="true">
+              <path d="M1 7 H43 l3.5 -5 l4.5 10 l3.5 -5 H99"/>
+            </svg>
+            <i class="corner c1"></i><i class="corner c2"></i>
+            <i class="corner c3"></i><i class="corner c4"></i>
+          </div>
+        </div>
+        <div class="devfoot">
+          <button class="knopf" data-btn title="kurz drücken / 2 s halten">KNOPF</button>
+          <div class="fk">
             <div class="mini"><span>Akku</span><b data-bat>--</b></div>
             <div class="bat" data-batbar></div>
+          </div>
+          <div class="fk right">
             <div class="mini"><span>WLAN</span><b data-wifi>aus</b></div>
             <div class="ledrow"><i class="led" data-led title="Summer (stumm)"></i><i class="led ap" data-ap title="WLAN AP"></i></div>
           </div>
-        </div>`;
+        </div>
+        <div class="devhint" data-hint></div>`;
       wrap.appendChild(card);
       this.cards[d.id] = card;
       this.bindKnopf(card.querySelector('[data-btn]'), d);
@@ -246,27 +262,32 @@ const UI = {
     btn.addEventListener('keyup', (ev) => { if (ev.key === ' ' || ev.key === 'Enter') end(ev); });
   },
 
+  // LCD-Inhalt im Querformat: Modus + Sub oben, Status + Zeit in der Mitte, Balken unten
   screenHTML(d) {
     const m = d.screenModel();
-    if (!m) {
-      return `<div class="st"><span>AUS</span></div>
-        <div class="sbig" style="color:#2c4550">—</div>
-        <div class="ssub" style="color:#2c4550">2 s halten</div>
-        <div class="stime" style="color:#1d323a">--:--</div>
-        <div class="sndot"></div>`;
-    }
     const pct = Math.round(d.batteryPct);
     const cells = [1, 2, 3, 4].map(i => `<i class="${pct > (i - 1) * 25 ? 'on' : ''}"></i>`).join('');
+    if (!m) {
+      return `<div class="lrow"><span class="lmode">AUS</span><span class="lbat">${cells}</span></div>
+        <div class="lrow"><span class="lbig" style="opacity:.45">—</span></div>
+        <div class="lrow"><span class="lsub">2 s halten</span></div>`;
+    }
     const bars = Array.from({ length: FW.bars }, (_, i) => `<i class="${i < (m.bars || 0) ? 'on' : ''}"></i>`).join('');
-    return `
-      <div class="st"><span>${m.top || ''}</span><span class="batmini">${cells}</span></div>
-      <div class="sbig">${m.big || ''}</div>
-      <div class="ssub">${m.sub || ''}</div>
-      <div class="stime">${m.time !== null && m.time !== undefined ? fmtTime(m.time) : ''}</div>
-      <div class="sbars">${bars}</div>
-      <div class="scap"><i style="width:${Math.round((m.capture || 0) * 100)}%"></i></div>
-      <div class="shint">${[m.hintTick, m.hint].filter(Boolean).map(h => `<span>${h}</span>`).join('')}</div>
-      <div class="sndot"></div>`;
+    const time = (m.time !== null && m.time !== undefined) ? fmtTime(m.time) : '';
+    const big = String(m.big || '');
+    return `<div class="lrow">
+        <span class="lmode">${m.top || ''}</span>
+        <span class="lsub">${m.sub || ''}</span>
+        <span class="lbat">${cells}</span>
+      </div>
+      <div class="lrow">
+        <span class="lbig ${big.length > 9 ? 'mini' : ''}">${big}</span>
+        <span class="ltime">${time}</span>
+      </div>
+      <div class="lrow">
+        <span class="lbars">${bars}</span>
+        <span class="lcap"><i style="width:${Math.round((m.capture || 0) * 100)}%"></i></span>
+      </div>`;
   },
 
   renderDevices() {
@@ -280,8 +301,26 @@ const UI = {
       card.classList.toggle('off', !d.on);
 
       const scr = card.querySelector('[data-screen]');
-      scr.className = 'screen' + (d.on ? '' : ' dark') + (d.soundPulseT > 0.02 ? ' snd' : '');
-      scr.innerHTML = this.screenHTML(d);
+      const m2 = d.screenModel();
+      const key = [d.on, d.phase, m2 ? m2.top : '', m2 ? m2.big : '', m2 ? m2.sub : '',
+        m2 ? m2.time : '', m2 ? m2.bars : 0, Math.round((m2 && m2.capture || 0) * 12),
+        d.soundPulseT > 0.02, Math.round(d.batteryPct / 4)].join('|');
+      if (scr.dataset.key !== key) {          // nur neu zeichnen, wenn sich etwas ändert
+        scr.dataset.key = key;
+        scr.className = 'lcd' + (d.on ? '' : ' dark') + (d.soundPulseT > 0.02 ? ' snd' : '');
+        scr.innerHTML = this.screenHTML(d);
+        // Text im LCD passend verkleinern, statt ihn abzuschneiden
+        ['.lbig', '.lsub'].forEach(sel => {
+          const el = scr.querySelector(sel);
+          if (!el) return;
+          let fs = parseFloat(getComputedStyle(el).fontSize) || 12;
+          let guard = 0;
+          while (el.scrollWidth > el.clientWidth + 1 && fs > 6 && guard++ < 10) {
+            fs -= 0.6;
+            el.style.fontSize = fs + 'px';
+          }
+        });
+      }
 
       const pct = Math.round(d.batteryPct);
       card.querySelector('[data-bat]').textContent = d.on ? `${d.voltage.toFixed(2)} V` : '--';

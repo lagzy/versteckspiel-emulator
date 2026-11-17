@@ -59,6 +59,15 @@ Die Seite `http://192.168.4.1` gehört dem Gerät, dessen WLAN das Handy gerade 
 Am Gerät selbst braucht man den Knopf dann nur noch zum Ein-/Ausschalten und für den
 gemeinsamen Start (Doppeldruck) — der Modus kommt vom Handy.
 
+## Aussehen
+
+Die Geräte sind dem CAD nachempfunden (Foto von Vlad, 16.11.): orange Schale mit
+Randnaht, dunkle Platte mit blauem LCD und «PULSE», darunter der geriffelte Summer,
+darunter die dünne Pulslinie. Das Display ist wie im CAD **quer**; der Inhalt passt
+sich an (Modus + Zone oben, Status + Restzeit in der Mitte, Nähe-Balken unten) und
+wird automatisch verkleinert, statt abgeschnitten. Der Knopf sitzt unter dem Gehäuse,
+weil im CAD-Frontbild keiner zu sehen ist.
+
 ## Was der Emulator abbildet
 
 | Anforderung | Im Emulator |

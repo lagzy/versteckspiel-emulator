@@ -327,7 +327,7 @@ class Device {
       d.hint = ['', 'wifi', 'espnow', 'ton?', 'display', 'akku'][this.bootStep] || '';
     } else if (this.phase === 'menu') {
       d.big = this.mode.name;
-      d.sub = `${fmtTime(this.roundSec)} · ${this.mode.minPlayers}-${this.mode.maxPlayers} Sp.`;
+      d.sub = `${fmtTime(this.roundSec)} · ${this.mode.minPlayers}-${this.mode.maxPlayers}`;
       d.hint = 'drücken = Modus';
       d.hintTick = '2× schnell = Start';
     } else if (this.phase === 'ready') {
