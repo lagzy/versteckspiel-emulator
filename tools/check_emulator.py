@@ -151,8 +151,8 @@ ok("M249 300 H519 V466" in app and "A135 112" in app,
    "app.js: Summer-Tab nicht an den CAD-Massen (249..519, elliptischer Boden 135/112)")
 ok(re.search(r"\.lcd \{[^}]*left:\s*22\.95%[^}]*top:\s*23\.76%[^}]*width:\s*26\.03%[^}]*height:\s*7\.92%", css, re.S) is not None,
    "style.css: LCD-Fenster nicht an den CAD-Massen (246..525 / 192..256)")
-ok("M51 606 H472 L500 514 L532 690 L566 606 H1021" in app,
-   "app.js: Pulslinie nicht an den CAD-Massen (Basis y 606, Spitze 500/532)")
+ok("M51 606 H548 L592 676 L640 552 L700 606 H1021" in app,
+   "app.js: Pulslinie nicht an den CAD-Massen (Basis y 606, Senke x 592, Spitze x 640)")
 
 # --------------------------------------------------------------------------- out
 print(f"Prüfungen: {checks}, Fehler: {len(fails)}")

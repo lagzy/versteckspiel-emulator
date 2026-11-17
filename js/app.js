@@ -95,6 +95,11 @@ const CASE_SVG = `
     <g transform="translate(1072,808) scale(-1,-1)">${RIBS}</g>
   </g>
 
+  <!-- Pulslinie (liegt hinter dem Summer-Tab, wie im CAD) -->
+  <path d="M51 606 H548 L592 676 L640 552 L700 606 H1021" fill="none"
+        stroke="#8d3a12" stroke-opacity="0.58" stroke-width="5"
+        stroke-linejoin="round" stroke-linecap="round"/>
+
   <!-- Summer-Tab (hängt an der Platte, elliptischer Boden) -->
   <path d="M249 300 H519 V466 A135 112 0 0 1 249 466 Z" fill="url(#cplate)"/>
   <ellipse cx="384" cy="455" rx="78" ry="78" fill="#3a3d41"/>
@@ -117,14 +122,13 @@ const CASE_SVG = `
   <rect x="238" y="184" width="295" height="80" rx="6" fill="none" stroke="#000" stroke-opacity="0.55" stroke-width="4"/>
 
   <!-- PULSE als Konturschrift -->
+  <text x="729" y="261" text-anchor="middle" font-family="Arial, Helvetica, sans-serif"
+        font-size="100" font-weight="700" letter-spacing="12" fill="none"
+        stroke="#e9b98f" stroke-opacity="0.35" stroke-width="9" stroke-linejoin="round">PULSE</text>
   <text x="729" y="262" text-anchor="middle" font-family="Arial, Helvetica, sans-serif"
         font-size="100" font-weight="700" letter-spacing="12" fill="none"
         stroke="#2c2f33" stroke-width="7" stroke-linejoin="round">PULSE</text>
 
-  <!-- Pulslinie -->
-  <path d="M51 606 H472 L500 514 L532 690 L566 606 H1021" fill="none"
-        stroke="#8d3a12" stroke-opacity="0.62" stroke-width="4"
-        stroke-linejoin="round" stroke-linecap="round"/>
 </svg>`;
 
 const UI = {
