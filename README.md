@@ -56,7 +56,7 @@ nachgebaut. Alle Teile liegen an den ausgemessenen Werten:
 | Summer-Tab | x 249–519 · ab y 327 · elliptischer Boden 135/112 | derselbe Pfad + Ring bei (384, 455) |
 | LCD-Fenster | x 246–525 · y 192–256 (4,36 : 1) | HTML-LCD exakt in diesem Fenster |
 | Pulslinie | Basis y 606 · Spitze x 500 (y 514) · Senke x 532 (y 690) | derselbe Pfad, 4 px |
-| PULSE | x 536–922 · y 150–300 | Konturschrift, Bounding-Box 538–919 / 169–283 |
+| PULSE | x 618–903 · y 152–228 (Versalhöhe 76) | Konturschrift mit `textLength="285"`, Grundlinie 228 |
 | Eck-Riffelung | Randstreifen, Striche im 45°-Winkel | 14 Linien je Ecke, 3,4 px, 38 % Deckkraft |
 
 Prüfbar: `tools/check_emulator.py` vergleicht diese Zahlen mit `js/app.js` und

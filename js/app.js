@@ -122,12 +122,14 @@ const CASE_SVG = `
   <rect x="238" y="184" width="295" height="80" rx="6" fill="none" stroke="#000" stroke-opacity="0.55" stroke-width="4"/>
 
   <!-- PULSE als Konturschrift -->
-  <text x="729" y="261" text-anchor="middle" font-family="Arial, Helvetica, sans-serif"
-        font-size="100" font-weight="700" letter-spacing="12" fill="none"
-        stroke="#e9b98f" stroke-opacity="0.35" stroke-width="9" stroke-linejoin="round">PULSE</text>
-  <text x="729" y="262" text-anchor="middle" font-family="Arial, Helvetica, sans-serif"
-        font-size="100" font-weight="700" letter-spacing="12" fill="none"
-        stroke="#2c2f33" stroke-width="7" stroke-linejoin="round">PULSE</text>
+  <!-- PULSE: im CAD x 618..910, y 152..225 (gemessen) -->
+  <text x="618" y="227" text-anchor="start" textLength="285" lengthAdjust="spacingAndGlyphs"
+        font-family="Arial, Helvetica, sans-serif" font-size="104" font-weight="700"
+        fill="none" stroke="#f0c39c" stroke-opacity="0.30" stroke-width="8"
+        stroke-linejoin="round">PULSE</text>
+  <text x="618" y="228" text-anchor="start" textLength="285" lengthAdjust="spacingAndGlyphs"
+        font-family="Arial, Helvetica, sans-serif" font-size="104" font-weight="700"
+        fill="none" stroke="#2c2f33" stroke-width="6" stroke-linejoin="round">PULSE</text>
 
 </svg>`;
 
