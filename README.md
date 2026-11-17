@@ -43,24 +43,25 @@ Die vier Geräte starten **aus**. Das ist Absicht: der Ablauf „einschalten, Mo
 losspielen“ (A-15, unter fünf Minuten) soll im Emulator wirklich durchlaufen werden.
 Wer nur schnell spielen will: **Alle einschalten**.
 
-### Gehäuse: 1:1 zum CAD?
+### Gehäuse: 1:1 zum CAD
 
-Ja, in den Proportionen. Die Werte sind am CAD-Bild (Vlads Front-Rendering, 1072 × 808 px)
-ausgemessen und in `style.css` als Prozent des Gehäuses hinterlegt:
+Das Gehäuse ist **ein SVG in den CAD-Koordinaten** (`viewBox 0 0 1072 808`), also
+Pixel für Pixel aus Vlads Front-Rendering übernommen — nicht mehr mit CSS-Kästen
+nachgebaut. Alle Teile liegen an den ausgemessenen Werten:
 
-| Teil | CAD (gemessen) | Emulator (gemessen im Browser) |
+| Teil | CAD (gemessen) | im Emulator |
 |---|---|---|
-| Gehäuse | 1,327 : 1 (1072 × 808) | 1,327 : 1 |
-| dunkle Platte | x 13,2–87,0 % · y 15,0–40,5 % | x 13,2 % · w 73,8 % · y 15,0 % · h 25,5 % |
-| LCD-Fenster | x 22,9–49,0 % · y 23,8–32,0 % (4,2 : 1) | x 23,8 % · w 24,3 % · y 25,0 % · h 8,1 % (4 : 1) |
-| Summer-Tab | x 23–51 % · y 40,5–58 % | x 23 % · w 28 % · y 40,5 % · h 17,5 % |
-| Pulslinie | y 58,5 % · x 5–95 % | y 58,5 % · x 5 % · w 90 % |
-| Eck-Riffelung | vier Ecken, ~6 % breit | vier Ecken, 5,6 % breit |
+| Schale | 1072 × 808, Eckenradius 105 | `rect rx=105` + Randnaht bei 15 px |
+| dunkle Platte | x 140–932 · y 121–327 · r 28 | derselbe Pfad |
+| Summer-Tab | x 249–519 · ab y 327 · elliptischer Boden 135/112 | derselbe Pfad + Ring bei (384, 455) |
+| LCD-Fenster | x 246–525 · y 192–256 (4,36 : 1) | HTML-LCD exakt in diesem Fenster |
+| Pulslinie | Basis y 606 · Spitze x 500 (y 514) · Senke x 532 (y 690) | derselbe Pfad, 4 px |
+| PULSE | x 536–922 · y 150–300 | Konturschrift, Bounding-Box 538–919 / 169–283 |
+| Eck-Riffelung | Randstreifen, Striche im 45°-Winkel | 14 Linien je Ecke, 3,4 px, 38 % Deckkraft |
 
-**Nicht 1:1, weil es das Original nicht hergibt:** Farbverläufe, die genaue Krümmung der
-Platte, die Riffelung des Summers und die Schriftform von «PULSE» sind nachgebaut, nicht
-abgemessen — im CAD steht eine dünne Konturschrift, im Emulator eine kräftige. Das
-LCD zeigt bewusst Inhalt (weiss auf schwarz, 128 × 32) statt der leeren Fläche im Rendering.
+Prüfbar: `tools/check_emulator.py` vergleicht diese Zahlen mit `js/app.js` und
+`style.css`. Das LCD zeigt echten Inhalt (weiss auf schwarz, 128 × 32) statt der
+leeren Fläche im Rendering.
 
 ## Display: was wirklich verbaut wird
 

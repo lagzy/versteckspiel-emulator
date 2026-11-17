@@ -40,6 +40,93 @@ const Log = {
 };
 
 // ----------------------------------------------------------------------- UI
+// Gehäuse als SVG in den CAD-Koordinaten (Vlads Front-Rendering, 1072 x 808 px).
+// Alle Zahlen sind am Bild ausgemessen: Platte 140..932 / 121..327, Tab 249..519
+// mit elliptischem Boden (rx 135, ry 112), LCD-Fenster 246..525 / 192..256,
+// Pulslinie y 606 mit Spitze bei x 500/532, Ring bei (384, 455).
+// Riffelung in den vier Ecken: kurze Striche quer durch den Randstreifen,
+// am CAD-Bild abgeschaut (R ~105 px, Streifen ~18 px breit).
+function cornerRibs() {
+  const R = 105, cx = 105, cy = 105, out = [];
+  for (let a = 178; a <= 272; a += 7) {
+    const r1 = (a) * Math.PI / 180, r2 = (a + 6) * Math.PI / 180;
+    const x1 = cx + (R - 20) * Math.cos(r1), y1 = cy + (R - 20) * Math.sin(r1);
+    const x2 = cx + (R + 3) * Math.cos(r2), y2 = cy + (R + 3) * Math.sin(r2);
+    out.push(`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}"/>`);
+  }
+  return out.join('');
+}
+const RIBS = cornerRibs();
+
+const CASE_SVG = `
+<svg class="caseart" viewBox="0 0 1072 808" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+  <defs>
+    <linearGradient id="cbody" x1="0" y1="0" x2="0.15" y2="1">
+      <stop offset="0" stop-color="#f4a76c"/>
+      <stop offset="0.42" stop-color="#e98a45"/>
+      <stop offset="0.78" stop-color="#dd7430"/>
+      <stop offset="1" stop-color="#cf6827"/>
+    </linearGradient>
+    <linearGradient id="cplate" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4d5054"/>
+      <stop offset="0.45" stop-color="#3c3f43"/>
+      <stop offset="1" stop-color="#2e3134"/>
+    </linearGradient>
+    <linearGradient id="cbezel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3b3e42"/><stop offset="1" stop-color="#2a2d30"/>
+    </linearGradient>
+    <radialGradient id="cgloss" cx="0.5" cy="0" r="0.85">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.12"/>
+      <stop offset="0.55" stop-color="#ffffff" stop-opacity="0.02"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.10"/>
+    </radialGradient>
+  </defs>
+
+  <!-- orange Schale mit Randnaht -->
+  <rect x="0" y="0" width="1072" height="808" rx="105" fill="url(#cbody)"/>
+  <rect x="0" y="0" width="1072" height="808" rx="105" fill="url(#cgloss)"/>
+  <rect x="15" y="15" width="1042" height="778" rx="93" fill="none" stroke="#fbe2cc" stroke-opacity="0.30" stroke-width="2.5"/>
+
+  <!-- Eck-Riffelung (vier Ecken, am CAD ausgemessen) -->
+  <g stroke="#7d3410" stroke-opacity="0.38" stroke-width="3.4" stroke-linecap="round">
+    ${RIBS}
+    <g transform="translate(1072,0) scale(-1,1)">${RIBS}</g>
+    <g transform="translate(0,808) scale(1,-1)">${RIBS}</g>
+    <g transform="translate(1072,808) scale(-1,-1)">${RIBS}</g>
+  </g>
+
+  <!-- Summer-Tab (hängt an der Platte, elliptischer Boden) -->
+  <path d="M249 300 H519 V466 A135 112 0 0 1 249 466 Z" fill="url(#cplate)"/>
+  <ellipse cx="384" cy="455" rx="78" ry="78" fill="#3a3d41"/>
+  <circle cx="384" cy="455" r="70" fill="none" stroke="#6e7378" stroke-width="13"
+          stroke-dasharray="5 9" stroke-linecap="butt"/>
+  <circle cx="384" cy="455" r="57" fill="#313438"/>
+  <circle cx="384" cy="455" r="57" fill="none" stroke="#2a2d30" stroke-width="3"/>
+  <circle cx="384" cy="455" r="42" fill="#2b2e32"/>
+
+  <!-- dunkle Platte -->
+  <path d="M168 121 H904 A28 28 0 0 1 932 149 V299 A28 28 0 0 1 904 327 H168
+           A28 28 0 0 1 140 299 V149 A28 28 0 0 1 168 121 Z" fill="url(#cplate)"/>
+  <path d="M168 128 H904 A22 22 0 0 1 926 150 V298 A22 22 0 0 1 904 320 H168
+           A22 22 0 0 1 146 298 V150 A22 22 0 0 1 168 128 Z" fill="none"
+        stroke="#ffffff" stroke-opacity="0.07" stroke-width="2"/>
+
+  <!-- LCD-Fenster: Fassung + schwarzer Innenrahmen -->
+  <rect x="220" y="166" width="331" height="116" rx="12" fill="url(#cbezel)"/>
+  <rect x="232" y="178" width="307" height="92" rx="8" fill="#16191b"/>
+  <rect x="238" y="184" width="295" height="80" rx="6" fill="none" stroke="#000" stroke-opacity="0.55" stroke-width="4"/>
+
+  <!-- PULSE als Konturschrift -->
+  <text x="729" y="262" text-anchor="middle" font-family="Arial, Helvetica, sans-serif"
+        font-size="100" font-weight="700" letter-spacing="12" fill="none"
+        stroke="#2c2f33" stroke-width="7" stroke-linejoin="round">PULSE</text>
+
+  <!-- Pulslinie -->
+  <path d="M51 606 H472 L500 514 L532 690 L566 606 H1021" fill="none"
+        stroke="#8d3a12" stroke-opacity="0.62" stroke-width="4"
+        stroke-linejoin="round" stroke-linecap="round"/>
+</svg>`;
+
 const UI = {
   devices: [],
   cards: {},
@@ -189,6 +276,7 @@ const UI = {
   },
 
   // ---------------------------------------------------------------- devices
+
   buildDevices() {
     const wrap = $('#devices');
     wrap.innerHTML = '';
@@ -204,16 +292,8 @@ const UI = {
           <span class="chip" data-chip>aus</span>
         </div>
         <div class="case">
-          <div class="casebody">
-            <div class="plate"><div class="brand">PULSE</div></div>
-            <div class="lcdwrap"><div class="lcd" data-screen></div></div>
-            <div class="grille" aria-hidden="true"><i></i></div>
-            <svg class="ecg" viewBox="0 0 100 14" preserveAspectRatio="none" aria-hidden="true">
-              <path d="M1 7 H43 l3.5 -5 l4.5 10 l3.5 -5 H99"/>
-            </svg>
-            <i class="corner c1"></i><i class="corner c2"></i>
-            <i class="corner c3"></i><i class="corner c4"></i>
-          </div>
+          ${CASE_SVG}
+          <div class="lcd" data-screen></div>
         </div>
         <div class="devfoot">
           <button class="knopf" data-btn title="kurz drücken / 2 s halten">KNOPF</button>
@@ -260,15 +340,14 @@ const UI = {
     btn.addEventListener('keyup', (ev) => { if (ev.key === ' ' || ev.key === 'Enter') end(ev); });
   },
 
-  // LCD-Inhalt im Querformat: Modus + Sub oben, Status + Zeit in der Mitte, Balken unten
+  // LCD-Inhalt: zwei Zeilen wie auf einem 128x32-OLED
   screenHTML(d) {
     const m = d.screenModel();
     const pct = Math.round(d.batteryPct);
     const cells = [1, 2, 3, 4].map(i => `<i class="${pct > (i - 1) * 25 ? 'on' : ''}"></i>`).join('');
     if (!m) {
       return `<div class="lrow"><span class="lmode">AUS</span><span class="lbat">${cells}</span></div>
-        <div class="lrow"><span class="lbig" style="opacity:.45">—</span></div>
-        <div class="lrow"><span class="lsub">2 s halten</span></div>`;
+        <div class="lrow"><span class="lbig" style="opacity:.45">—</span></div>`;
     }
     const bars = Array.from({ length: FW.bars }, (_, i) => `<i class="${i < (m.bars || 0) ? 'on' : ''}"></i>`).join('');
     const time = (m.time !== null && m.time !== undefined) ? fmtTime(m.time) : '';
@@ -276,16 +355,13 @@ const UI = {
     return `<div class="lrow">
         <span class="lmode">${m.top || ''}</span>
         <span class="lsub">${m.sub || ''}</span>
-        <span class="lbat">${cells}</span>
-      </div>
-      <div class="lrow">
-        <span class="lbig ${big.length > 9 ? 'mini' : ''}">${big}</span>
         <span class="ltime">${time}</span>
       </div>
       <div class="lrow">
+        <span class="lbig ${big.length > 9 ? 'mini' : ''}">${big}</span>
         <span class="lbars">${bars}</span>
-        <span class="lcap"><i style="width:${Math.round((m.capture || 0) * 100)}%"></i></span>
-      </div>`;
+      </div>
+      <span class="lcap"><i style="width:${Math.round((m.capture || 0) * 100)}%"></i></span>`;
   },
 
   renderDevices() {

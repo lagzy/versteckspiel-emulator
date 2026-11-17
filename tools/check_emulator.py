@@ -134,25 +134,25 @@ for name, src in [("config.js", cfg), ("sound.js", snd), ("device.js", dev),
 ok(len(re.findall(r"\{\s*id:\s*'[A-D]',\s*color:", cfg)) == 4, "config.js: es müssen vier Geräte sein")
 
 # --------------------------------------------------------------------------- 8
-# Display: 0,91"-OLED mit 128 x 32 px -> Seitenverhältnis 4:1, weiss auf schwarz
+# Display: 0,91"-OLED mit 128 x 32 px -> weiss auf schwarz, Fenster wie im CAD
 css = read(ROOT / "style.css")
-ok(re.search(r"\.lcd \{[^}]*aspect-ratio:\s*4\s*/\s*1", css, re.S) is not None,
-   "style.css: .lcd muss 4:1 sein (128 x 32 px OLED, A-02)")
 ok("128x32" in dev, "device.js: Boot-Log nennt das Display nicht als 128x32")
 ok("128 × 32" in read(ROOT / "README.md"), "README.md: Display-Spezifikation (128 × 32) fehlt")
 ok(re.search(r"\.lcd[^{]*\{[^}]*#05080b", css, re.S) is not None,
    "style.css: LCD-Hintergrund ist nicht schwarz (monochromes OLED)")
 
 # --------------------------------------------------------------------------- 9
-# Gehäuse 1:1 zum CAD (Werte am CAD-Bild 1072 x 808 px ausgemessen)
+# Gehäuse 1:1 im CAD-Koordinatensystem (viewBox 1072 x 808)
+ok('viewBox="0 0 1072 808"' in app, "app.js: Gehäuse-SVG nicht in CAD-Koordinaten (1072 x 808)")
 ok(re.search(r"\.case \{[^}]*aspect-ratio:\s*1072\s*/\s*808", css, re.S) is not None,
    "style.css: Gehäuse muss 1072/808 = 1,327 sein (CAD)")
-ok(re.search(r"\.plate \{[^}]*left:\s*13\.2%[^}]*width:\s*73\.8%[^}]*top:\s*15%[^}]*height:\s*25\.5%", css, re.S) is not None,
-   "style.css: Platte muss x 13,2 % / w 73,8 % / y 15 % / h 25,5 % sein (CAD)")
-ok(re.search(r"\.lcdwrap \{[^}]*left:\s*22\.9%[^}]*width:\s*26\.1%[^}]*top:\s*23\.8%", css, re.S) is not None,
-   "style.css: LCD-Fenster muss x 22,9 % / w 26,1 % / y 23,8 % sein (CAD)")
-ok(re.search(r"\.grille \{[^}]*left:\s*23%[^}]*top:\s*40\.5%[^}]*width:\s*28%", css, re.S) is not None,
-   "style.css: Summer-Tab muss x 23 % / y 40,5 % / w 28 % sein (CAD)")
+ok("M168 121 H904" in app and "V299" in app, "app.js: Platte nicht an den CAD-Massen (168/121 .. 904/299)")
+ok("M249 300 H519 V466" in app and "A135 112" in app,
+   "app.js: Summer-Tab nicht an den CAD-Massen (249..519, elliptischer Boden 135/112)")
+ok(re.search(r"\.lcd \{[^}]*left:\s*22\.95%[^}]*top:\s*23\.76%[^}]*width:\s*26\.03%[^}]*height:\s*7\.92%", css, re.S) is not None,
+   "style.css: LCD-Fenster nicht an den CAD-Massen (246..525 / 192..256)")
+ok("M51 606 H472 L500 514 L532 690 L566 606 H1021" in app,
+   "app.js: Pulslinie nicht an den CAD-Massen (Basis y 606, Spitze 500/532)")
 
 # --------------------------------------------------------------------------- out
 print(f"Prüfungen: {checks}, Fehler: {len(fails)}")
