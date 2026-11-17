@@ -133,6 +133,16 @@ for name, src in [("config.js", cfg), ("sound.js", snd), ("device.js", dev),
 # Vier Geräte, wie in der Aufgabe verlangt
 ok(len(re.findall(r"\{\s*id:\s*'[A-D]',\s*color:", cfg)) == 4, "config.js: es müssen vier Geräte sein")
 
+# --------------------------------------------------------------------------- 8
+# Display: 0,91"-OLED mit 128 x 32 px -> Seitenverhältnis 4:1, weiss auf schwarz
+css = read(ROOT / "style.css")
+ok(re.search(r"\.lcd \{[^}]*aspect-ratio:\s*4\s*/\s*1", css, re.S) is not None,
+   "style.css: .lcd muss 4:1 sein (128 x 32 px OLED, A-02)")
+ok("128x32" in dev, "device.js: Boot-Log nennt das Display nicht als 128x32")
+ok("128 × 32" in read(ROOT / "README.md"), "README.md: Display-Spezifikation (128 × 32) fehlt")
+ok(re.search(r"\.lcd[^{]*\{[^}]*#05080b", css, re.S) is not None,
+   "style.css: LCD-Hintergrund ist nicht schwarz (monochromes OLED)")
+
 # --------------------------------------------------------------------------- out
 print(f"Prüfungen: {checks}, Fehler: {len(fails)}")
 for f in fails:

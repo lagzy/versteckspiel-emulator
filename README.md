@@ -43,6 +43,29 @@ Die vier Geräte starten **aus**. Das ist Absicht: der Ablauf „einschalten, Mo
 losspielen“ (A-15, unter fünf Minuten) soll im Emulator wirklich durchlaufen werden.
 Wer nur schnell spielen will: **Alle einschalten**.
 
+## Display: was wirklich verbaut wird
+
+| | Wert | Quelle |
+|---|---|---|
+| Bauteil | 0,91-Zoll-OLED-Modul, 5 Stück, 6.73 CHF | `05_Abrechnung.xlsx` A-02, Bestellung 10.11.2026 |
+| Auflösung | **128 × 32 px** (Variante WEISS) | Beleg-Screenshot `01_Dokumente/belege/AliExpress_2026-11-10/03_Summer_OLED_1.44_6.73.png` |
+| Seitenverhältnis | **4 : 1** (quer) | 128 / 32 |
+| Aktive Fläche | ≈ 2,2 × 0,6 cm (aus 0,91" Diagonale und 4:1 gerechnet) | Rechnung, keine Herstellerangabe |
+
+Der Emulator zeichnet das LCD deshalb **4:1** und **weiss auf schwarz** (so sieht ein
+monochromes OLED aus), nicht cyan wie im CAD-Rendering. Der Boot-Log schreibt
+«Display 0,91" OLED 128x32 ok». Drei Textzeilen passen auf 32 px Höhe: Modus + Zone,
+Status + Restzeit, Nähe-Balken; alles Weitere steht unter dem Gehäuse.
+
+**Zwei Punkte fürs Team, nicht vom Emulator erfunden:**
+
+1. `P U2_Projektwissen.txt`, `STATUS.md` und `AGENTS.md` nennen «Display 1,5 × 2,5 cm».
+   Das passt nicht zum bestellten Modul (128 × 32 px, 0,91 Zoll, ≈ 2,2 × 0,6 cm).
+   Eine der beiden Angaben ist falsch — bitte am Bauteil nachmessen.
+2. Das Maskottchen ist als **64 × 64 px** Sprite für ein **128 × 64**-Display gezeichnet
+   (`04_Maskottchen/README.md` sagt das selbst). Auf 32 px Höhe passt es nicht; es
+   braucht eine Neuaustellung in 32 px, bevor es in die Firmware geht.
+
 ## Handyseite: ein Raum, alle Geräte
 
 Die Seite `http://192.168.4.1` gehört dem Gerät, dessen WLAN das Handy gerade nutzt
@@ -76,7 +99,7 @@ weil im CAD-Frontbild keiner zu sehen ist.
 | A-02 Geräte erkennen sich, Abstand | ESP-NOW-Modell: Abstand aus Position, Reichweite 12 m, Rauschen ±0,25 m |
 | A-03 vier Spielmodi | Klassisch, Zeitdruck, Rollentausch, Zombie — alle spielbar |
 | A-04 2 bis 4 Spieler | Startprüfung: zu wenige / zu viele Geräte werden abgelehnt (mit `error`-Ton) |
-| A-05 Display: Modus, Restzeit, Status | 1,5 × 2,5 cm Display je Gerät, Zonen-Balken, Fang-Ring |
+| A-05 Display: Modus, Restzeit, Status | 0,91"-OLED 128 × 32 (4:1) je Gerät, weiss auf schwarz, Zonen-Balken, Fang-Ring |
 | A-06 ein Knopf | alles über kurz / 2 s halten |
 | A-07 Regeln auf der Geräte-Webseite | Reiter „Regeln“ auf der Handyseite |
 | A-08 Modus/Dauer/Wartezeit über Handy | Formular schreibt in „nvs“ (localStorage) aller Geräte im Raum, überlebt Neustart |

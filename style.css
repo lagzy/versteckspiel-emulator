@@ -212,7 +212,7 @@ code { font-family: var(--mono); font-size: .92em; color: #a9ded0; }
 .dev.off .casebody { filter: saturate(.55) brightness(.72); }
 
 .plate {
-  position: absolute; left: 5.5%; right: 5.5%; top: 9.5%; height: 43%;
+  position: absolute; left: 5.5%; right: 5.5%; top: 8%; height: 38%;
   border-radius: 4cqw / 12cqh;
   background: linear-gradient(180deg, #4c4f53 0%, #3a3d41 45%, #2d3033 100%);
   box-shadow:
@@ -223,9 +223,11 @@ code { font-family: var(--mono); font-size: .92em; color: #a9ded0; }
   z-index: 2;
 }
 .platescreen {
-  flex: 0 0 62%; height: 100%; border-radius: 2.4cqw; background: #202325;
+  /* echtes Display: 0,91" OLED, 128 x 32 px -> Verhältnis 4:1 (A-02, 05_Abrechnung) */
+  flex: 0 0 60%; aspect-ratio: 4 / 1; align-self: center; border-radius: 2cqw; background: #202325;
   box-shadow: inset 0 0 0 .8cqw #26292c, inset 0 .5cqh .6cqh rgba(0,0,0,.9), 0 1px 0 rgba(255,255,255,.06);
-  display: flex; padding: 2.5% 3.5%;
+  display: grid; place-items: center; padding: 0;
+  box-shadow: inset 0 0 0 .8cqw #26292c, inset 0 .5cqh .6cqh rgba(0,0,0,.9), 0 1px 0 rgba(255,255,255,.06);
 }
 .brand {
   flex: 1 1 auto; text-align: center; font: 800 5.4cqw/1 var(--font); letter-spacing: .17em;
@@ -233,7 +235,7 @@ code { font-family: var(--mono); font-size: .92em; color: #a9ded0; }
   padding-right: .3em;
 }
 .grille {
-  position: absolute; left: 10%; top: 47%; width: 18%; height: 26%;
+  position: absolute; left: 10%; top: 41%; width: 18%; height: 25%;
   background: linear-gradient(180deg, #565b60 0%, #43474b 45%, #35383c 100%);
   border-radius: 0 0 50% 50% / 0 0 46% 46%;
   box-shadow: 0 1.2cqh 2.2cqh -0.6cqh rgba(0,0,0,.6), inset 0 -.5cqh 1cqh rgba(0,0,0,.35), inset 0 .4cqh 0 rgba(255,255,255,.14);
@@ -260,45 +262,46 @@ code { font-family: var(--mono); font-size: .92em; color: #a9ded0; }
 
 /* --- LCD-Inhalt (quer, wie im CAD) --- */
 .lcd {
-  position: relative; flex: 1 1 auto; border-radius: 1.2cqw; overflow: hidden;
-  background: linear-gradient(180deg, #a9ebfb 0%, #82d5ee 48%, #62c3e1 100%);
-  color: #06384a; font-family: var(--mono);
+  position: relative; width: 87%; aspect-ratio: 4 / 1; border-radius: 1cqw; overflow: hidden;
+  /* echtes Modul: 0,91" OLED 128x32, Variante WEISS -> weisse Pixel auf Schwarz */
+  background: radial-gradient(120% 140% at 50% 0%, #0a1016 0%, #05080b 70%);
+  color: #eef6ff; font-family: var(--mono); text-shadow: 0 0 .6cqw rgba(200,228,255,.55);
   display: flex; flex-direction: column; justify-content: space-between;
-  padding: 5% 6%;
-  box-shadow: inset 0 0 3cqw rgba(255,255,255,.5), inset 0 -1.4cqh 1.6cqh rgba(10,80,110,.22);
+  padding: 3% 4%;
+  box-shadow: inset 0 0 2cqw rgba(0,0,0,.85), inset 0 0 0 1px rgba(120,160,200,.14);
 }
 .lcd::after {
   content: ''; position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(118deg, rgba(255,255,255,.45) 0%, rgba(255,255,255,0) 44%);
+  background: linear-gradient(118deg, rgba(190,225,255,.10) 0%, rgba(255,255,255,0) 46%);
 }
-.lcd.dark { filter: grayscale(.55) brightness(.5); }
-.lcd.snd { filter: brightness(1.12) saturate(1.05); }
+.lcd.dark { filter: brightness(.35) saturate(.4); }
+.lcd.snd { filter: brightness(1.35); }
 .lcd .lrow { display: flex; align-items: center; justify-content: space-between; gap: 4%; min-width: 0; }
-.lcd .lmode { font-size: 2.5cqw; letter-spacing: .07em; opacity: .85; white-space: nowrap; }
+.lcd .lmode { font-size: 1.8cqw; letter-spacing: .07em; opacity: .85; white-space: nowrap; }
 .lcd .lsub {
-  flex: 1 1 auto; font-size: 2.3cqw; opacity: .62; text-align: right;
+  flex: 1 1 auto; font-size: 1.6cqw; opacity: .62; text-align: right;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
 }
 .lcd .lbat { display: inline-flex; gap: .7cqw; align-items: flex-end; }
-.lcd .lbat i { width: 1.2cqw; height: 2cqw; background: rgba(6,56,74,.22); border-radius: .3cqw; }
-.lcd .lbat i.on { background: rgba(6,56,74,.8); }
+.lcd .lbat i { width: 1.2cqw; height: 2cqw; background: rgba(240,248,255,.18); border-radius: .3cqw; }
+.lcd .lbat i.on { background: rgba(240,248,255,.92); }
 .lcd .lbig {
   flex: 1 1 auto; min-width: 0;
-  font-size: 5.7cqw; font-weight: 700; line-height: 1; white-space: nowrap;
+  font-size: 3.6cqw; font-weight: 700; line-height: 1; white-space: nowrap;
   overflow: hidden;
 }
-.lcd .lbig.mini { font-size: 4.5cqw; letter-spacing: -.01em; }
-.lcd .ltime { font-size: 5.7cqw; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
-.lcd .lbars { display: flex; gap: .9cqw; align-items: flex-end; height: 3.4cqh; flex: 0 0 auto; }
-.lcd .lbars i { width: 2.4cqw; background: rgba(6,56,74,.18); border-radius: .4cqw; }
+.lcd .lbig.mini { font-size: 2.9cqw; letter-spacing: -.01em; }
+.lcd .ltime { font-size: 3.6cqw; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.lcd .lbars { display: flex; gap: .7cqw; align-items: flex-end; height: 2.2cqh; flex: 0 0 auto; }
+.lcd .lbars i { width: 1.7cqw; background: rgba(240,248,255,.18); border-radius: .4cqw; }
 .lcd .lbars i:nth-child(1) { height: 22%; }
 .lcd .lbars i:nth-child(2) { height: 40%; }
 .lcd .lbars i:nth-child(3) { height: 58%; }
 .lcd .lbars i:nth-child(4) { height: 78%; }
 .lcd .lbars i:nth-child(5) { height: 100%; }
-.lcd .lbars i.on { background: rgba(6,56,74,.82); }
-.lcd .lcap { flex: 1 1 auto; height: 1.3cqh; border-radius: 1cqh; background: rgba(6,56,74,.16); overflow: hidden; }
-.lcd .lcap i { display: block; height: 100%; background: rgba(6,56,74,.8); }
+.lcd .lbars i.on { background: rgba(240,248,255,.95); }
+.lcd .lcap { flex: 1 1 auto; height: 1.3cqh; border-radius: 1cqh; background: rgba(240,248,255,.16); overflow: hidden; }
+.lcd .lcap i { display: block; height: 100%; background: rgba(240,248,255,.92); }
 
 /* --- Fusszeile der Karte: Knopf, Akku, WLAN --- */
 .devfoot { display: flex; align-items: center; gap: 9px; margin-top: 8px; }

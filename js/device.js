@@ -297,7 +297,7 @@ class Device {
     if (n === 1) this.log(`wifi: AP "${this.ssid}" startet, ip ${FW.wifi.ip}`);
     if (n === 2) this.log('espnow: init, Kanal 1, Broadcast-Peer');
     if (n === 3) this.log('selftest: Summer - kein Sound geliefert (Dorian), bleibt stumm');
-    if (n === 4) this.log('selftest: Display 128x64 ok, Knopf GPIO14 ok');
+    if (n === 4) this.log('selftest: Display 0,91" OLED 128x32 ok, Knopf GPIO14 ok');
     if (n === 5) this.log('selftest: Akku-Schutz 3,0 V aktiv (A-11)', 'ok');
   }
 
