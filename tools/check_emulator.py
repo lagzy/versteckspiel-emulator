@@ -143,6 +143,17 @@ ok("128 × 32" in read(ROOT / "README.md"), "README.md: Display-Spezifikation (1
 ok(re.search(r"\.lcd[^{]*\{[^}]*#05080b", css, re.S) is not None,
    "style.css: LCD-Hintergrund ist nicht schwarz (monochromes OLED)")
 
+# --------------------------------------------------------------------------- 9
+# Gehäuse 1:1 zum CAD (Werte am CAD-Bild 1072 x 808 px ausgemessen)
+ok(re.search(r"\.case \{[^}]*aspect-ratio:\s*1072\s*/\s*808", css, re.S) is not None,
+   "style.css: Gehäuse muss 1072/808 = 1,327 sein (CAD)")
+ok(re.search(r"\.plate \{[^}]*left:\s*13\.2%[^}]*width:\s*73\.8%[^}]*top:\s*15%[^}]*height:\s*25\.5%", css, re.S) is not None,
+   "style.css: Platte muss x 13,2 % / w 73,8 % / y 15 % / h 25,5 % sein (CAD)")
+ok(re.search(r"\.lcdwrap \{[^}]*left:\s*22\.9%[^}]*width:\s*26\.1%[^}]*top:\s*23\.8%", css, re.S) is not None,
+   "style.css: LCD-Fenster muss x 22,9 % / w 26,1 % / y 23,8 % sein (CAD)")
+ok(re.search(r"\.grille \{[^}]*left:\s*23%[^}]*top:\s*40\.5%[^}]*width:\s*28%", css, re.S) is not None,
+   "style.css: Summer-Tab muss x 23 % / y 40,5 % / w 28 % sein (CAD)")
+
 # --------------------------------------------------------------------------- out
 print(f"Prüfungen: {checks}, Fehler: {len(fails)}")
 for f in fails:

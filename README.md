@@ -43,6 +43,25 @@ Die vier Geräte starten **aus**. Das ist Absicht: der Ablauf „einschalten, Mo
 losspielen“ (A-15, unter fünf Minuten) soll im Emulator wirklich durchlaufen werden.
 Wer nur schnell spielen will: **Alle einschalten**.
 
+### Gehäuse: 1:1 zum CAD?
+
+Ja, in den Proportionen. Die Werte sind am CAD-Bild (Vlads Front-Rendering, 1072 × 808 px)
+ausgemessen und in `style.css` als Prozent des Gehäuses hinterlegt:
+
+| Teil | CAD (gemessen) | Emulator (gemessen im Browser) |
+|---|---|---|
+| Gehäuse | 1,327 : 1 (1072 × 808) | 1,327 : 1 |
+| dunkle Platte | x 13,2–87,0 % · y 15,0–40,5 % | x 13,2 % · w 73,8 % · y 15,0 % · h 25,5 % |
+| LCD-Fenster | x 22,9–49,0 % · y 23,8–32,0 % (4,2 : 1) | x 23,8 % · w 24,3 % · y 25,0 % · h 8,1 % (4 : 1) |
+| Summer-Tab | x 23–51 % · y 40,5–58 % | x 23 % · w 28 % · y 40,5 % · h 17,5 % |
+| Pulslinie | y 58,5 % · x 5–95 % | y 58,5 % · x 5 % · w 90 % |
+| Eck-Riffelung | vier Ecken, ~6 % breit | vier Ecken, 5,6 % breit |
+
+**Nicht 1:1, weil es das Original nicht hergibt:** Farbverläufe, die genaue Krümmung der
+Platte, die Riffelung des Summers und die Schriftform von «PULSE» sind nachgebaut, nicht
+abgemessen — im CAD steht eine dünne Konturschrift, im Emulator eine kräftige. Das
+LCD zeigt bewusst Inhalt (weiss auf schwarz, 128 × 32) statt der leeren Fläche im Rendering.
+
 ## Display: was wirklich verbaut wird
 
 | | Wert | Quelle |

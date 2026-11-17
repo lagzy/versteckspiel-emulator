@@ -205,10 +205,8 @@ const UI = {
         </div>
         <div class="case">
           <div class="casebody">
-            <div class="plate">
-              <div class="platescreen"><div class="lcd" data-screen></div></div>
-              <div class="brand">PULSE</div>
-            </div>
+            <div class="plate"><div class="brand">PULSE</div></div>
+            <div class="lcdwrap"><div class="lcd" data-screen></div></div>
             <div class="grille" aria-hidden="true"><i></i></div>
             <svg class="ecg" viewBox="0 0 100 14" preserveAspectRatio="none" aria-hidden="true">
               <path d="M1 7 H43 l3.5 -5 l4.5 10 l3.5 -5 H99"/>
@@ -315,7 +313,7 @@ const UI = {
           if (!el) return;
           let fs = parseFloat(getComputedStyle(el).fontSize) || 12;
           let guard = 0;
-          while (el.scrollWidth > el.clientWidth + 1 && fs > 6 && guard++ < 10) {
+          while (el.scrollWidth > el.clientWidth + 1 && fs > 4.5 && guard++ < 12) {
             fs -= 0.6;
             el.style.fontSize = fs + 'px';
           }

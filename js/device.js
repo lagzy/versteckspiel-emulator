@@ -327,9 +327,9 @@ class Device {
       d.hint = ['', 'wifi', 'espnow', 'ton?', 'display', 'akku'][this.bootStep] || '';
     } else if (this.phase === 'menu') {
       d.big = this.mode.name;
-      d.sub = `${fmtTime(this.roundSec)} · ${this.mode.minPlayers}-${this.mode.maxPlayers}`;
-      d.hint = 'drücken = Modus';
-      d.hintTick = '2× schnell = Start';
+      d.sub = '';                      // 128x32: kein Platz für eine dritte Angabe
+      d.hint = `${fmtTime(this.roundSec)} · ${this.mode.minPlayers}-${this.mode.maxPlayers} Spieler`;
+      d.hintTick = 'drücken = Modus · 2× = Start';
     } else if (this.phase === 'ready') {
       d.big = 'BEREIT';
       d.sub = `${Game.readyDevices().length}/${Game.activeDevices().length}`;
