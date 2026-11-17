@@ -352,13 +352,16 @@ const UI = {
     const pct = Math.round(d.batteryPct);
     const cells = [1, 2, 3, 4].map(i => `<i class="${pct > (i - 1) * 25 ? 'on' : ''}"></i>`).join('');
     if (!m) {
-      return `<div class="lrow"><span class="lmode">AUS</span><span class="lbat">${cells}</span></div>
-        <div class="lrow"><span class="lbig" style="opacity:.45">—</span></div>`;
+      return `<div class="lcdin">
+        <div class="lrow"><span class="lmode">AUS</span><span class="lbat">${cells}</span></div>
+        <div class="lrow"><span class="lbig" style="opacity:.45">—</span></div>
+      </div>`;
     }
     const bars = Array.from({ length: FW.bars }, (_, i) => `<i class="${i < (m.bars || 0) ? 'on' : ''}"></i>`).join('');
     const time = (m.time !== null && m.time !== undefined) ? fmtTime(m.time) : '';
     const big = String(m.big || '');
-    return `<div class="lrow">
+    return `<div class="lcdin">
+      <div class="lrow">
         <span class="lmode">${m.top || ''}</span>
         <span class="lsub">${m.sub || ''}</span>
         <span class="ltime">${time}</span>
@@ -367,7 +370,8 @@ const UI = {
         <span class="lbig ${big.length > 9 ? 'mini' : ''}">${big}</span>
         <span class="lbars">${bars}</span>
       </div>
-      <span class="lcap"><i style="width:${Math.round((m.capture || 0) * 100)}%"></i></span>`;
+      <span class="lcap"><i style="width:${Math.round((m.capture || 0) * 100)}%"></i></span>
+    </div>`;
   },
 
   renderDevices() {

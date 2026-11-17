@@ -204,14 +204,19 @@ code { font-family: var(--mono); font-size: .92em; color: #a9ded0; }
 
 /* --- LCD-Inhalt: echtes 128x32-OLED (4:1), drei Mikrozeilen --- */
 .lcd {
+  /* eigener Container: Schriftgrössen richten sich nach der LCD-Höhe, nicht
+     nach der Gehäusebreite - sonst läuft der Text auf schmalen Bildschirmen raus */
+  container-type: size;
   position: absolute; left: 22.95%; top: 23.76%; width: 26.03%; height: 7.92%;
   border-radius: .7cqw; overflow: hidden;
   /* 0,91" OLED, Variante WEISS -> weisse Pixel auf Schwarz */
   background: radial-gradient(120% 140% at 50% 0%, #0a1016 0%, #05080b 70%);
-  color: #eef6ff; font-family: var(--mono); text-shadow: 0 0 .6cqw rgba(200,228,255,.55);
-  display: flex; flex-direction: column; justify-content: space-between;
-  padding: 4% 5%;
-  box-shadow: inset 0 0 2cqw rgba(0,0,0,.85), inset 0 0 0 1px rgba(120,160,200,.14);
+  color: #eef6ff; font-family: var(--mono); text-shadow: 0 0 2cqh rgba(200,228,255,.55);
+  box-shadow: inset 0 0 6cqh rgba(0,0,0,.85), inset 0 0 0 1px rgba(120,160,200,.14);
+}
+.lcd .lcdin {
+  position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between;
+  padding: 3cqh 4cqw;
 }
 .lcd::after {
   content: ''; position: absolute; inset: 0; pointer-events: none;
@@ -219,30 +224,30 @@ code { font-family: var(--mono); font-size: .92em; color: #a9ded0; }
 }
 .lcd.dark { filter: brightness(.35) saturate(.4); }
 .lcd.snd { filter: brightness(1.35); }
-.lcd .lrow { display: flex; align-items: center; justify-content: space-between; gap: 4%; min-width: 0; }
-.lcd .lmode { font-size: 2.1cqw; letter-spacing: .06em; opacity: .85; white-space: nowrap; }
+.lcd .lrow { display: flex; align-items: center; justify-content: space-between; gap: 3%; min-width: 0; }
+.lcd .lmode { font-size: 27cqh; letter-spacing: .05em; opacity: .85; white-space: nowrap; flex: 0 0 auto; }
 .lcd .lsub {
-  flex: 1 1 auto; font-size: 1.9cqw; opacity: .62; text-align: right;
+  flex: 1 1 auto; font-size: 23cqh; opacity: .62; text-align: right;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
 }
-.lcd .lbat { display: inline-flex; gap: .7cqw; align-items: flex-end; }
-.lcd .lbat i { width: 1.1cqw; height: 1.8cqw; background: rgba(240,248,255,.18); border-radius: .3cqw; }
+.lcd .lbat { display: inline-flex; gap: 1.2cqw; align-items: flex-end; flex: 0 0 auto; }
+.lcd .lbat i { width: 2.4cqw; height: 22cqh; background: rgba(240,248,255,.18); border-radius: .5cqw; }
 .lcd .lbat i.on { background: rgba(240,248,255,.92); }
 .lcd .lbig {
   flex: 1 1 auto; min-width: 0;
-  font-size: 3.1cqw; font-weight: 700; line-height: 1; white-space: nowrap; overflow: hidden;
+  font-size: 47cqh; font-weight: 700; line-height: 1; white-space: nowrap; overflow: hidden;
 }
-.lcd .lbig.mini { font-size: 2.5cqw; letter-spacing: -.01em; }
-.lcd .ltime { font-size: 3.1cqw; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
-.lcd .lbars { display: flex; gap: .6cqw; align-items: flex-end; height: 2.6cqh; flex: 0 0 auto; }
-.lcd .lbars i { width: 1.3cqw; background: rgba(240,248,255,.18); border-radius: .3cqw; }
+.lcd .lbig.mini { font-size: 38cqh; letter-spacing: -.01em; }
+.lcd .ltime { font-size: 47cqh; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; flex: 0 0 auto; }
+.lcd .lbars { display: flex; gap: 1.2cqw; align-items: flex-end; height: 32cqh; flex: 0 0 auto; }
+.lcd .lbars i { width: 2.2cqw; background: rgba(240,248,255,.18); border-radius: .5cqw; }
 .lcd .lbars i:nth-child(1) { height: 22%; }
 .lcd .lbars i:nth-child(2) { height: 40%; }
 .lcd .lbars i:nth-child(3) { height: 58%; }
 .lcd .lbars i:nth-child(4) { height: 78%; }
 .lcd .lbars i:nth-child(5) { height: 100%; }
 .lcd .lbars i.on { background: rgba(240,248,255,.95); }
-.lcd .lcap { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: rgba(240,248,255,.14); overflow: hidden; }
+.lcd .lcap { position: absolute; left: 0; right: 0; bottom: 0; height: 8cqh; background: rgba(240,248,255,.14); overflow: hidden; }
 .lcd .lcap i { display: block; height: 100%; background: rgba(240,248,255,.92); }
 
 /* --- Fusszeile der Karte: Knopf, Akku, WLAN --- */

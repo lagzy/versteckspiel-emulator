@@ -86,6 +86,11 @@ Status + Restzeit, Nähe-Balken; alles Weitere steht unter dem Gehäuse.
    (`04_Maskottchen/README.md` sagt das selbst). Auf 32 px Höhe passt es nicht; es
    braucht eine Neuaustellung in 32 px, bevor es in die Firmware geht.
 
+**LCD-Text:** Die Schrift richtet sich nach der Höhe des Displays (Container-Query
+`cqh`), nicht nach der Gehäusebreite. Vorher war sie an der Breite bemessen und lief
+auf schmalen Bildschirmen unten aus dem Fenster — jetzt passen beide Zeilen in jeder
+Grösse (geprüft bei 390 px und 1700 px Fensterbreite: kein Überlauf).
+
 ## Handyseite: ein Raum, alle Geräte
 
 Die Seite `http://192.168.4.1` gehört dem Gerät, dessen WLAN das Handy gerade nutzt
