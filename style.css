@@ -105,7 +105,7 @@ code { font-family: var(--f-mono); font-size: .92em; color: var(--text); }
 /* Zeichenmotiv: nur in der Ecke der Kopfzeile, gedämpft, nie über Inhalt */
 .orn {
   position: absolute; top: var(--s2); right: var(--s6);
-  width: 51px; height: 27px; color: var(--muted);
+  width: 54px; height: 54px; color: var(--muted);
   opacity: .8; pointer-events: none;
 }
 
