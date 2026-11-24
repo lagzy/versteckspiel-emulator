@@ -4,8 +4,8 @@ Vier virtuelle Geräte und ein virtuelles Handy im Browser. Der Emulator spielt 
 Firmware durch, die auf dem ESP32 laufen soll: **Einschalten → Menü → WLAN des Geräts →
 Handy-Einstellungen → gemeinsamer Start → Runde in einem der vier Modi → Ausschalten.**
 
-**Ton ist absichtlich stumm.** Von Dorian ist noch kein Sound geliefert (`TONPAKET_DORIAN.md`,
-38 Sounds, Block A–D). Der Emulator ruft jeden Sound mit dem Namen aus dieser Liste auf,
+**Ton kommt aus `sounds/<id>.wav`.** Quelle ist das Tonpaket (`TONPAKET_DORIAN.md`,
+Block A, 14 Sounds; Block B-D sind seit 24.11. übersprungen). Der Emulator ruft jeden Sound mit dem Namen aus dieser Liste auf,
 zählt die Aufrufe und zeigt sie im Tonpaket-Fenster — man sieht also, *wo* welcher Ton
 gebraucht wird. Kommt eine Datei, spielt sie ohne Codeänderung (siehe unten).
 
@@ -141,7 +141,7 @@ Alle Zahlen stehen in `js/config.js` und stammen aus `Spielregeln/spielregeln.md
 index.html          Aufbau der Seite (Feld, 4 Geräte, Handy, zwei Fenster)
 style.css           Aussehen
 js/config.js        alle Parameter: Piepton-Gesetz, Zonen, Runden, Stufen, Akku, Funk
-js/sound.js         die 38 Sound-IDs aus TONPAKET_DORIAN.md + stumme Wiedergabe
+js/sound.js         die Sound-IDs aus TONPAKET_DORIAN.md (Block A) + Wiedergabe aus sounds/<id>.wav
 js/device.js        ein Gerät: Start, Menü, Knopf, Akku, Display-Inhalt
 js/game.js          Rundenlogik der vier Modi (Rollen, Fang, Stufen, Infektion)
 js/app.js           Oberfläche: Feld, Gerätekarten, Handy, Log, Auto-Demo
@@ -153,7 +153,7 @@ tools/check_emulator.py   Prüfskript (stdlib): Zahlen, Sound-IDs, verdrahtete I
 1. Datei als `sounds/<name>.wav` (oder `.mp3`) ablegen, `name` = ID aus `sound.js`
    (`boot_up`, `ping_tick`, `capture`, …).
 2. Seite neu laden. `Sound.loadFiles()` findet die Datei, `Sound.muted` fällt weg,
-   der Knopf oben rechts zeigt `Ton: n/38`.
+   der Knopf oben rechts zeigt `Ton: n/14`.
 3. Kein Code wird geändert. Fehlt eine Datei, bleibt nur dieser eine Ton stumm.
 
 Was noch fehlt, ist die **Klangform selbst** (Piezo-Mono, Ticks ≤ 60 ms, Grollen
