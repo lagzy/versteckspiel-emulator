@@ -23,8 +23,10 @@ const FW = {
     [5.0, 1.00],
     [6.0, 1.40],
     [8.0, 3.00],
+    [10.0, 4.00],
+    [12.0, 6.00],
   ],
-  silentFromM: 10.0,     // over 10 m: no tone at all ("ausser Reichweite")
+  silentFromM: 15.0,     // over 15 m: no tone at all ("ausser Reichweite")
 
   // --- Zonen für die Anzeige (Regeln 1 / Kap. 10) ------------------------
   zones: { near: 2.0, mid: 5.0 },

@@ -52,7 +52,7 @@ if block:
     ok(dists[:3] == [1.0, 2.0, 3.0] and ints[:3] == [0.12, 0.25, 0.50],
        "config.js: beepLaw weicht von Regeln Kap. 10 ab (1 m 0,12 s / 2 m 0,25 s / 3 m 0,50 s)")
 
-ok(re.search(r"silentFromM:\s*10", cfg) is not None, "config.js: Stille erst ab 10 m (Regeln 2.1)")
+ok(re.search(r"silentFromM:\s*15", cfg) is not None, "config.js: Stille erst ab 15 m (Regeln 2.1, Vlad 25.11.)")
 ok(re.search(r"capture:\s*\{\s*seconds:\s*3,\s*distanceM:\s*2", cfg) is not None,
    "config.js: Fang = 3 s innerhalb von 2 m (Regeln 2.2)")
 ok(re.search(r"windowSec:\s*10", cfg) is not None, "config.js: Startfenster 10 s (Regeln 2.3)")
